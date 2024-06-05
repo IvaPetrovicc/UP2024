@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moji Termini</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+
+        .appointment {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .btn-update {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="/index">Početna</a></li>
+            <li><a href="/moji-termini">Moji termini</a></li>
+            <li><a href="/logout">Odjava</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>Moji Termini</h2>
+        <div id="appointments"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('access_token'));
+            if (!tokenCookie) {
+                console.error('Access token not found in cookies.');
+                return;
+            }
+        
+            const token = tokenCookie.split('=')[1];
+        
+            fetch('/appointments/user', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch appointments.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const appointmentsContainer = document.getElementById('appointments');
+                appointmentsContainer.innerHTML = '';
+                if (data.length === 0) {
+                    appointmentsContainer.innerHTML = '<p>No appointments found.</p>';
+                    return;
+                }
+        
+                data.forEach(appointment => {
+                    const appointmentDiv = document.createElement('div');
+                    appointmentDiv.classList.add('appointment');
+                    appointmentDiv.innerHTML = `
+                        <p>User ID: ${appointment.user_id}</p>
+                        <p>Employee ID: ${appointment.employee_id}</p>
+                        <p>Service ID: ${appointment.service_id}</p>
+                        <p>Start Time: ${appointment.start_time}</p>
+                        <p>End Time: ${appointment.end_time}</p>
+                        <button class="btn btn-update" onclick="updateAppointment(${appointment.appointment_id})"><i class="fas fa-edit"></i> Ažuriraj</button>
+                        <button class="btn btn-delete" onclick="deleteAppointment(${appointment.appointment_id})"><i class="fas fa-trash-alt"></i> Obriši</button>
+                    `;
+                    appointmentsContainer.appendChild(appointmentDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const appointmentsContainer = document.getElementById('appointments');
+                appointmentsContainer.innerHTML = `<p>${error.message}</p>`;
+            });
+        });
+        
+        function updateAppointment(appointmentId) {
+            window.location.href = `/edit-appointment/${appointmentId}`;
+        }
+        
+        function deleteAppointment(appointmentId) {
+            if (confirm('Jeste li sigurni da želite izbrisati ovaj termin?')) {
+                const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('access_token'));
+                if (!tokenCookie) {
+                    console.error('Access token not found in cookies.');
+                    return;
+                }
+
+                const token = tokenCookie.split('=')[1];
+
+                fetch(`/appointments/${appointmentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete appointment.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Termin uspješno obrisan.');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Greška prilikom brisanja termina.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

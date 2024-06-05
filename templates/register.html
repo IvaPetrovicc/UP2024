@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://img.freepik.com/free-photo/close-up-white-marble-textured-wall_53876-139849.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+        }
+
+        .register-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .register-container img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .register-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .register-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-container form label {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .register-container form input[type="text"],
+        .register-container form input[type="email"],
+        .register-container form input[type="password"],
+        .register-container form select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .register-container form button[type="submit"] {
+            padding: 10px;
+            border: none;
+            background-color: #6c757d;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .register-container form button[type="submit"]:hover {
+            background-color: #495057;
+        }
+
+        .register-container p {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .register-container p a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .register-container p a:hover {
+            text-decoration: underline;
+        }
+
+        .fa-user,
+        .fa-envelope,
+        .fa-lock,
+        .fa-user-tag {
+            position: relative;
+            top: 2px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg" alt="Register Image">
+        <h2><i class="fas fa-user-plus"></i> Registration</h2>
+        <form action="/register/" method="post">
+            <label for="username"><i class="fas fa-user"></i> Username:</label>
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <label for="password"><i class="fas fa-lock"></i> Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <label for="role"><i class="fas fa-user-tag"></i> Role:</label>
+            <select id="role" name="role" required>
+                <option value="admin">Admin</option>
+                <option value="korisnik">Korisnik</option>
+                <option value="zaposlenik">Zaposlenik</option>
+            </select>
+            <button type="submit"><i class="fas fa-user-plus"></i> Register</button>
+        </form>
+        <p>Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</body>
+</html>

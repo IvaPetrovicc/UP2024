@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Appointment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .btn-update {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Appointment</h2>
+        <form id="editForm">
+            <div class="form-group">
+                <label for="user_id">User ID</label>
+                <input type="text" id="user_id" name="user_id" required>
+            </div>
+            <div class="form-group">
+                <label for="employee_id">Employee ID</label>
+                <input type="text" id="employee_id" name="employee_id" required>
+            </div>
+            <div class="form-group">
+                <label for="service_id">Service ID</label>
+                <input type="text" id="service_id" name="service_id" required>
+            </div>
+            <div class="form-group">
+                <label for="start_time">Start Time</label>
+                <input type="text" id="start_time" name="start_time" required>
+            </div>
+            <div class="form-group">
+                <label for="end_time">End Time</label>
+                <input type="text" id="end_time" name="end_time" required>
+            </div>
+            <button type="button" class="btn btn-update" onclick="submitForm()">Update</button>
+            <button type="button" class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const appointmentId = window.location.pathname.split('/').pop();
+            const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('access_token'));
+            if (!tokenCookie) {
+                console.error('Access token not found in cookies.');
+                return;
+            }
+        
+            const token = tokenCookie.split('=')[1];
+        
+            fetch(`/appointments/${appointmentId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch appointment.');
+                }
+                return response.json();
+            })
+            .then(appointment => {
+                document.getElementById('user_id').value = appointment.user_id;
+                document.getElementById('employee_id').value = appointment.employee_id;
+                document.getElementById('service_id').value = appointment.service_id;
+                document.getElementById('start_time').value = appointment.start_time;
+                document.getElementById('end_time').value = appointment.end_time;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function submitForm() {
+            const appointmentId = window.location.pathname.split('/').pop();
+            const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('access_token'));
+            if (!tokenCookie) {
+                console.error('Access token not found in cookies.');
+                return;
+            }
+
+            const token = tokenCookie.split('=')[1];
+
+            const appointmentData = {
+                user_id: document.getElementById('user_id').value,
+                employee_id: document.getElementById('employee_id').value,
+                service_id: document.getElementById('service_id').value,
+                start_time: document.getElementById('start_time').value,
+                end_time: document.getElementById('end_time').value,
+            };
+
+            fetch(`/appointments/${appointmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(appointmentData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update appointment.');
+                }
+                alert('Termin uspješno ažuriran.');
+                window.location.href = '/moji-termini';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Greška prilikom ažuriranja termina.');
+            });
+        }
+
+        function cancelEdit() {
+            window.location.href = '/moji-termini';
+        }
+    </script>
+</body>
+</html>
