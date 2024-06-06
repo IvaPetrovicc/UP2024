@@ -5,3 +5,7 @@ mysql-connector-python
 aioredis
 confluent-kafka
 mysqlclient
+python-jose
+passlib
+redis
+kafka-python

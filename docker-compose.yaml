@@ -9,12 +9,21 @@ services:
       - kafka
       - zookeeper
       - redis
-    
+    environment:
+      DB_HOST: moj-mysql-server  # The hostname of your existing MySQL container
+      DB_PORT: 3306              # The default MySQL port
+      DB_NAME: kolegij           # The database name
+      DB_USER: root              # The database user
+      DB_PASSWORD: lozinka123.   # The database password
+    networks:
+      - my-network
 
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+    networks:
+      - my-network
 
   kafka:
     image: wurstmeister/kafka
@@ -29,11 +38,16 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
+    networks:
+      - my-network
 
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+    networks:
+      - my-network
 
-  
+networks:
+  my-network:
+    external: true

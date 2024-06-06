@@ -13,7 +13,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 # Inicijalizacija Kafka producenta
-kafka_client = KafkaProducer(bootstrap_servers='localhost:9092')
+kafka_client = KafkaProducer(bootstrap_servers='up-kafka-1:9092')
 
 # Funkcija za dohvaćanje svih zaposlenika iz baze podataka
 def get_employees(db: Session):
